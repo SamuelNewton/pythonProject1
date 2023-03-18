@@ -3,7 +3,7 @@ import time
 import csv
 
 port = 'COM5'
-baud = 57600
+baud = 115200
 k = 0
 
 f = open('dataStore.csv', 'w', newline='')
