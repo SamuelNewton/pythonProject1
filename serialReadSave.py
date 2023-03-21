@@ -15,7 +15,7 @@ time.sleep(1)
 serialCom.flushInput()
 serialCom.setDTR(True)
 
-dataPoints = 2000
+dataPoints = 2001
 
 for k in range(dataPoints):
     try:
