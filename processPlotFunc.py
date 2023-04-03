@@ -1,3 +1,6 @@
+# Same functionality as processPlot.py however splitting into functions so they can be called from a GUI
+
+
 # Import statements
 import heartpy
 import numpy as np
@@ -22,15 +25,7 @@ t = t[5:]
 ECG = ECG[5:]
 PPG = PPG[5:]
 
-#samplerate = heartpy.get_samplerate_mstimer(t)
-#print(samplerate)
 
-# Length of users arm from sternal notch to fingertip
-#length = input("Enter length of arm in m: ")
-length = 0.8
-
-def average(PWV):
-    return sum(PWV)/len(PWV)
 
 
 # Filtering Data to remove noise (currently not working for PPG)
@@ -52,25 +47,47 @@ peaksECG, _ = find_peaks(normalizedECG, distance=100, prominence=0.2)
 print(peaksPPG)
 print(peaksECG)
 
-# Lists to store
-PWV = [None] * len(peaksPPG)
-sampleDiff = [None] * len(peaksPPG)
-timeDiff = [None] * len(peaksPPG)
 
-# Calculating time difference between peaks and hence PWV
-for i in range(0, len(peaksPPG)):
-    sampleDiff[i] = peaksPPG[i] - peaksECG[i]
-    timeDiff[i] = sampleDiff[i] / 200
-    PWV[i] = length / timeDiff[i];
+def age():
+    age = int(input("Enter your age: "))
+    return age
 
 
+def length():
+    length = float(input("Enter length of arm in m: "))
+    return length
 
-print(sampleDiff)
-print(timeDiff)
-print(PWV)
 
-averagePWV = average(PWV)
-print("Average PWV of user is: ", averagePWV)
+def PWVcalc():  # Takes peaks from PPG and ECG data and returns an average PWV value
+    # Lists to store PTT data and corresponding PWV values
+    PWV = [None] * len(peaksPPG)
+    sampleDiff = [None] * len(peaksPPG)
+    timeDiff = [None] * len(peaksPPG)
+    # Calculating time difference between peaks and hence PWV
+    for i in range(0, len(peaksPPG)):
+        sampleDiff[i] = peaksPPG[i] - peaksECG[i]
+        timeDiff[i] = sampleDiff[i] / 200
+        PWV[i] = length / timeDiff[i];
+
+    print(sampleDiff)
+    print(timeDiff)
+    print(PWV)
+    # Returns average PWV value
+    return sum(PWV) / len(PWV)
+
+
+# Calling functions
+length = length()
+age = age()
+print("Average PWV of user is: ", PWVcalc())
+
+
+#if age >= 20 && age <= 29:
+ #   print("Healthy range is 3 to 6")
+#elif age >= 30 && age <= 39:
+ #   print("Healthy range is 3 to 6")
+#elif age >= 40 && age <= 49:
+ #   print("Healthy range is 3 to 6")
 
 
 # Plotting

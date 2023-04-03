@@ -1,10 +1,49 @@
 # Import statements
+import serial
+import time
+import csv
 import heartpy
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import heartpy as py
 from scipy.signal import find_peaks
+
+port = 'COM5'
+baud = 115200
+k = 0
+
+f = open('dataStore.csv', 'w', newline='')
+f.truncate()
+
+serialCom = serial.Serial(port, baud)
+serialCom.setDTR(False)
+time.sleep(1)
+serialCom.flushInput()
+serialCom.setDTR(True)
+
+dataPoints = 2001
+
+for k in range(dataPoints):
+    try:
+        s_bytes = serialCom.readline()
+        decoded_bytes = s_bytes.decode('utf-8').strip('\r\n')
+        #print(decoded_bytes)
+
+        if k == 0:
+            values = decoded_bytes.split(',')
+        else:
+            values = [float(x) for x in decoded_bytes.split()]
+        print(values)
+
+        writer = csv.writer(f, delimiter=',')
+        writer.writerow(values)
+
+    except:
+        print('Error, not recorded')
+
+
+
 
 
 # Read data from CSV and store in data frame
@@ -44,7 +83,7 @@ normalizedPPG = (PPG-PPG.min())/ (PPG.max() - PPG.min())
 normalizedECG = (ECG-ECG.min())/ (ECG.max() - ECG.min())
 
 # Finding peaks in PPG data
-peaksPPG, _ = find_peaks(normalizedPPG, distance=100, prominence=0.05)
+peaksPPG, _ = find_peaks(normalizedPPG, distance=100, prominence=0.1)
 
 # Finding peaks in ECG data
 peaksECG, _ = find_peaks(normalizedECG, distance=100, prominence=0.2)
