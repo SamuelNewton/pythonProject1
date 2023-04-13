@@ -8,19 +8,19 @@ from scipy.signal import find_peaks
 
 
 # Read data from CSV and store in data frame
-data = pd.read_csv('dataStore.csv')
+data = pd.read_csv('Sam_Powerlab_Wet.csv')
 #print(data)
 
 # Retrieve data
 D = data.to_numpy();
 t = D[:,0]
-ECG = D[:,1]
-PPG = D[:,2]
+ECG = D[:,2]
+PPG = D[:,1]
 
 # Removes first 5 data entries from arrays as contain incorrect data as sensor is setting up
-t = t[5:]
-ECG = ECG[5:]
-PPG = PPG[5:]
+#t = t[5:]
+#ECG = ECG[5:]
+#PPG = PPG[5:]
 
 #samplerate = heartpy.get_samplerate_mstimer(t)
 #print(samplerate)
@@ -74,20 +74,41 @@ print("Average PWV of user is: ", averagePWV)
 
 
 # Plotting
-fig = plt.figure()
-ax = fig.subplots(3)
+
+fig, ax = plt.subplots(3, 1)
+fig.suptitle('PowerLab - Wet (Ag/AgCl) Electrodes', fontweight='bold')
+
 # PPG Signal
-ax[0].plot(normalizedPPG, label='Normalized PPG')
+ax[0].plot(t, normalizedPPG, label='Normalized Pulse Wave')
+ax[0].set_title('Pulse Transducer Signal')
+ax[0].set_xlabel('Time (s)')
+ax[0].set_ylabel('Amplitude (arbitrary units)')
+ax[0].set_xticks(np.arange(min(t), max(t+1), 1))
+ax[0].grid()
+
 # ECG Signal
-ax[1].plot(normalizedECG, label='Normalized ECG')
+ax[1].plot(t, normalizedECG, label='Normalized ECG')
+ax[1].set_title('ECG Signal')
+ax[1].set_xlabel('Time (s)')
+ax[1].set_ylabel('Amplitude (arbitrary units)')
+ax[1].set_xticks(np.arange(min(t), max(t+1), 1))
+ax[1].grid()
 
 # Combined plot with peaks shown
-ax[2].plot(normalizedPPG, label='Normalized PPG')
-ax[2].scatter(peaksPPG, normalizedPPG[peaksPPG], color = 'r', s = 10, marker = 'x', label = 'PPG maxima')
-ax[2].plot(normalizedECG, label='Normalized ECG')
-ax[2].scatter(peaksECG, normalizedECG[peaksECG], color = 'b', s = 10, marker = 'x', label = 'ECG maxima')
-ax[2].legend()
+ax[2].plot(t, normalizedPPG, label='Normalized Pulse Wave')
+ax[2].scatter(peaksPPG/200, normalizedPPG[peaksPPG], color = 'r', s = 10, marker = 'x', label = 'Pulse Wave Systolic Peak')
+ax[2].plot(t, normalizedECG, label='Normalized ECG')
+ax[2].scatter(peaksECG/200, normalizedECG[peaksECG], color = 'b', s = 10, marker = 'x', label = 'ECG R Wave Peak')
+ax[2].set_title('Combined ECG and Pulse Transducer Signals with peaks identified')
+ax[2].set_xlabel('Time (s)')
+ax[2].set_ylabel('Amplitude (arbitrary units)')
+ax[2].set_xticks(np.arange(min(t), max(t+1), 1))
+ax[2].legend(bbox_to_anchor=(1.02, 1), loc='upper left', borderaxespad=0 )
 ax[2].grid()
+
+
+
+
 plt.show()
 
 

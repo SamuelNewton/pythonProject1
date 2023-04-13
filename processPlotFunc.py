@@ -14,6 +14,9 @@ from scipy.signal import find_peaks
 data = pd.read_csv('dataStore.csv')
 #print(data)
 
+#Input arg = list
+
+
 # Retrieve data
 D = data.to_numpy();
 t = D[:,0]
@@ -60,6 +63,10 @@ def length():
 
 def PWVcalc():  # Takes peaks from PPG and ECG data and returns an average PWV value
     # Lists to store PTT data and corresponding PWV values
+
+
+    #
+
     PWV = [None] * len(peaksPPG)
     sampleDiff = [None] * len(peaksPPG)
     timeDiff = [None] * len(peaksPPG)
